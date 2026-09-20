@@ -1,0 +1,7 @@
+services:
+  agent-sec:
+    build: .
+    env_file:
+      - .env
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
