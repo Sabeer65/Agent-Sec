@@ -5,3 +5,5 @@ services:
       - .env
     environment:
       - OLLAMA_HOST=http://host.docker.internal:11434
+    volumes:
+      - ./reports:/app/reports
