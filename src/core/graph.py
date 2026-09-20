@@ -6,7 +6,7 @@ from src.agents.patcher import generate_patched_prompt
 from src.agents.attacker import generate_attack
 from reporter import generate_report
 
-
+# ─── Nodes ───────────────────────────────────────────────
 def target_node(state: GraphState) -> dict:
     reply = get_target_response(state.system_prompt, state.attack_payload)
     return {"target_reply": reply}
@@ -26,18 +26,6 @@ def evaluator_node(state: GraphState) -> dict:
         "reasoning": result.reasoning,
         "attempt_history": state.attempt_history + [new_history_entry],
     }
-
-def route_after_evaluation(state: GraphState) -> str:
-    """
-    Decide what happens after the Evaluator has judged an attack.
-
-    Returns:
-        "patch" if the target is vulnerable and retries remain,
-        otherwise "end".
-    """
-    if state.is_vulnerable and state.iteration < state.max_iterations:
-        return "patch"
-    return "end"
 
 
 def patcher_node(state: GraphState) -> dict:
@@ -64,7 +52,21 @@ def attacker_node(state: GraphState) -> dict:
         "attack_name": f"AI-Generated Attempt {state.iteration + 1}"
     }
 
+# ─── Routing ─────────────────────────────────────────────
+def route_after_evaluation(state: GraphState) -> str:
+    """
+    Decide what happens after the Evaluator has judged an attack.
 
+    Returns:
+        "patch" if the target is vulnerable and retries remain,
+        otherwise "end".
+    """
+    if state.is_vulnerable and state.iteration < state.max_iterations:
+        return "patch"
+    return "end"
+
+
+# ─── Graph Construction ──────────────────────────────────
 builder = StateGraph(GraphState)
 
 builder.add_node("attacker", attacker_node)

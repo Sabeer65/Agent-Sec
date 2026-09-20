@@ -11,11 +11,11 @@ def generate_report(final_state: dict) -> None:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     json_path = f"reports/report_{timestamp}.json"
-    with open(json_path, "w") as f:
+    with open(json_path, "w", encoding='utf-8') as f:
         json.dump(final_state, f, indent=2)
 
     md_path = f"reports/report_{timestamp}.md"
-    with open(md_path, "w") as f:
+    with open(md_path, "w", encoding='utf-8') as f:
         f.write(build_markdown_report(final_state))
 
     print(f"\nReport saved: {json_path}")
