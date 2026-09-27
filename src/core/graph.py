@@ -65,6 +65,16 @@ def route_after_evaluation(state: GraphState) -> str:
         return "patch"
     return "end"
 
+def run_graph_streaming(system_prompt: str):
+    """
+    Run the full Agent-Sec loop, yielding a (node_name, update_dict) pair
+    each time a node finishes, for live progress display.
+    """
+    initial_state = GraphState(system_prompt=system_prompt)
+    for step in graph.stream(initial_state):
+        node_name = list(step.keys())[0]
+        update = step[node_name]
+        yield node_name, update
 
 # ─── Graph Construction ──────────────────────────────────
 builder = StateGraph(GraphState)
