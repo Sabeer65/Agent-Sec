@@ -84,11 +84,18 @@ if "test_running" not in st.session_state:
     st.session_state.test_running = False
 if "last_run_complete" not in st.session_state:
     st.session_state.last_run_complete = False
+if "last_run_error" not in st.session_state:
+    st.session_state.last_run_error = None
 
 # Show the success message from the previous run, then clear it so it only shows once
 if st.session_state.last_run_complete:
     st.success("Run complete! Refresh the page to see it in Run History.")
     st.session_state.last_run_complete = False
+
+# Show the error message from the previous run, then clear it so it only shows once
+if st.session_state.last_run_error:
+    st.error(st.session_state.last_run_error)
+    st.session_state.last_run_error = None
 
 if not st.session_state.test_running:
     if st.button("Run New Test"):
@@ -112,10 +119,12 @@ else:
         st.session_state.last_run_complete = True
 
     except Exception as e:
-        st.error(
-            "Live testing requires a local Ollama instance and isn't available "
-            "on this hosted demo. Clone the repo and run it locally or via "
-            "Docker to try this feature. (Error: " + str(e) + ")"
+        st.session_state.last_run_error = (
+            "This live run couldn't complete. On this hosted demo, that's most "
+            "likely because the Target model (Ollama) isn't reachable, or the "
+            "Groq API key isn't configured here. Clone the repo and run it "
+            "locally or via Docker to try this feature fully. "
+            "(Error: " + str(e) + ")"
         )
 
     st.session_state.test_running = False
