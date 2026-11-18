@@ -1,11 +1,7 @@
-import os 
-from dotenv import load_dotenv
-from groq import Groq 
 from pydantic import BaseModel
 from typing import Literal
+from src.core.groq_client import get_groq_client
 
-load_dotenv()
-client = Groq(api_key=os.environ["GROQ_API_KEY"])
 
 class EvaluationResult(BaseModel):
     is_vulnerable: bool
@@ -31,6 +27,7 @@ Respond only with a JSON object matching this exact structure:
     "reasoning": "a short explanation"
 }}"""
 
+    client = get_groq_client()
     completion = client.chat.completions.create(
         model="openai/gpt-oss-120b",
         messages=[{"role": "user", "content": judge_prompt}],
