@@ -58,6 +58,7 @@ updated afterwards to describe what the system really does. Status is updated
 | 23 | Once live runs work, visitor runs would be written to the shared reports folder shown to all visitors. The hosting platform’s disk persistence is unverified | 5, 7 | Open |
 | 24 | Dashboard reads reports without encoding="utf-8" and indexes fields directly (KeyError on old formats) | 7 | Open |
 | 25 | Minor: sys.path hack and relative "reports/" path in the dashboard | 7 | Open |
+| 26 | The attacker can refuse and return refusal text instead of an attack (seen once in ~7 calls). By code reading, that text is sent to the target as the "attack", so a refusal can be reported as a blocked attack | 2 | Open |
 
 ## Not yet audited
 
