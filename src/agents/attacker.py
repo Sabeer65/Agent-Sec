@@ -1,4 +1,5 @@
 from src.core.groq_client import get_groq_client
+from src.core.config import get_settings
 
 
 def generate_attack(system_prompt: str, attempt_history: list) -> str:
@@ -35,7 +36,7 @@ multi-step manipulation, embedded fake instructions).
 Respond with ONLY the attack text itself. No explanation, no labels."""
     client = get_groq_client()
     completion = client.chat.completions.create(
-        model="qwen/qwen3.8-27b",
+        model=get_settings().attacker_model,
         messages=[
             {
                 "role": "system",
