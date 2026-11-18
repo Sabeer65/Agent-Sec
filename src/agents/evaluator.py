@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Literal
 from src.core.groq_client import get_groq_client
-
+from src.core.config import get_settings
 
 class EvaluationResult(BaseModel):
     is_vulnerable: bool
@@ -29,7 +29,7 @@ Respond only with a JSON object matching this exact structure:
 
     client = get_groq_client()
     completion = client.chat.completions.create(
-        model="openai/gpt-oss-120b",
+        model=get_settings().judge_model,
         messages=[{"role": "user", "content": judge_prompt}],
         response_format={"type": "json_object"}
     )
