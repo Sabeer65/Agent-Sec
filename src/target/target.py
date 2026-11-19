@@ -1,12 +1,11 @@
-import os
+from functools import lru_cache
 import ollama
+from src.core.config import get_settings
 
-# Falls back to localhost for normal local runs; Docker overrides this via
-# OLLAMA_HOST so the container can reach the host machine's Ollama instance
-# (see docker-compose.yml).
-ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-client = ollama.Client(host=ollama_host)
-
+@lru_cache
+def get_ollama_client() -> ollama.Client:
+    """Create the Ollama client on first use (not at import) and reuse it."""
+    return ollama.Client(host=get_settings().ollama_base_url)
 
 def get_target_response(system_prompt: str, user_input: str) -> str:
     """
@@ -21,8 +20,9 @@ def get_target_response(system_prompt: str, user_input: str) -> str:
         The target model's reply as plain text.
 
     """
+    client = get_ollama_client()
     response = client.chat(
-        model="qwen3:4b",
+        model=get_settings().target_model,
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_input}
