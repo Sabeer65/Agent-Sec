@@ -1,9 +1,5 @@
-import os
-from dotenv import load_dotenv
-from groq import Groq
-
-load_dotenv()
-client = Groq(api_key=os.environ["GROQ_API_KEY"])
+from src.core.groq_client import get_groq_client
+from src.core.config import get_settings
 
 def generate_patched_prompt(current_prompt: str, attack_payload: str, vulnerability_type: str, reasoning: str) -> str:
     """
@@ -36,8 +32,9 @@ Rewrite the system prompt to close this specific hole. Apply these defenses:
 
 Respond with ONLY the new system prompt text. No explanation, no markdown, just the prompt itself."""
 
+    client = get_groq_client()
     completion = client.chat.completions.create(
-        model="openai/gpt-oss-120b",
+        model=get_settings().patcher_model,
         messages=[{"role": "user", "content": patch_prompt}]
     )
 
